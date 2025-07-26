@@ -1,0 +1,25 @@
+[tool.poetry]
+name        = "ai-api"
+version     = "0.1.0"
+description = "AI API マイクロサービス"
+authors     = ["Ryuta Otsuka"]
+readme      = "README.md"
+packages    = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python  = "^3.11"
+fastapi = "^0.115"
+uvicorn = { extras = ["standard"], version = "^0.34" }
+google-cloud-aiplatform = "^1.96.0"
+python-dotenv = "^1.1.0"
+langchain-google-vertexai = "^2.0.24"
+langchain-core = "^0.3.64"
+google-cloud-firestore = "^2.21.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+ruff   = "^0.4"
+
+[build-system]
+requires      = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
