@@ -80,7 +80,7 @@ poetry install   # ← npm で言う「npm install」に相当
 ## 開発サーバーの起動
 
 ```bash
-poetry run uvicorn app.main:app --reload
+make dev
 ```
 
 - [http://127.0.0.1:8000](http://127.0.0.1:8000) で稼働確認
