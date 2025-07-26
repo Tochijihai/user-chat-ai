@@ -1,8 +1,9 @@
 """全てのルーティングを管理"""
 from fastapi import APIRouter
 from app.services.llm_chat_service import LLMChatService
-from app.infrastructure.vertex_chat_llm_client import VertexChatLLMClient
+from app.infrastructure.bedrock_chat_llm_client import BedrockChatLLMClient
 from app.spec import ChatRequest, ChatResponse, HealthResponse
+
 
 router = APIRouter()
 
@@ -24,14 +25,11 @@ async def chat_completion(request: ChatRequest):
     """
     チャット形式での会話エンドポイント
     
-    会話履歴を考慮してGemini AIが返答を生成します。
+    会話履歴を考慮してBedrockが返答を生成します。
     roleは'user'（ユーザー）または'assistant'（AI）を指定してください。
     """
-    llm_client = VertexChatLLMClient()
+    llm_client = BedrockChatLLMClient()
     # 依存性注入：インフラ層をアプリケーションサービスに注入
     chat_service = LLMChatService(llm_client)
     result = await chat_service.invoke(request.messages, request.schema)
     return result
-
-
-
