@@ -31,5 +31,5 @@ async def chat_completion(request: ChatRequest):
     llm_client = BedrockChatLLMClient()
     # 依存性注入：インフラ層をアプリケーションサービスに注入
     chat_service = LLMChatService(llm_client)
-    result = await chat_service.invoke(request.messages, request.schema, request.chat_id)
+    result = await chat_service.invoke(request.messages, request.schema)
     return result

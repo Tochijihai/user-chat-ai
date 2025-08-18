@@ -11,7 +11,7 @@ class BedrockChatLLMClient(ChatLLMClient):
     def __init__(self) -> None:
         self._base_llm = ChatBedrock(
             model_id="anthropic.claude-3-haiku-20240307-v1:0",
-            region_name=os.getenv("BEDROCK_REGION", "ap-northeast-1"),
+            region_name=os.getenv("BEDROCK_REGION", "us-east-1"),
             model_kwargs={
                 # Claude 3 系は下記キー
                 "temperature": 0.7,

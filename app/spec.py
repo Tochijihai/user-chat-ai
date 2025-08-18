@@ -43,7 +43,6 @@ class ChatRequest(BaseModel):
             "required": ["answer"]
         }
     )
-    chat_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -51,6 +50,5 @@ class ChatResponse(BaseModel):
     success: bool = Field(..., description="処理の成功/失敗")
     generated_text: Optional[str] = Field(None, description="AIの返答")
     generated_json: Optional[dict] = None
-    chat_id: Optional[str] = None
     error: Optional[str] = Field(None, description="エラーメッセージ（失敗時のみ）")
 
