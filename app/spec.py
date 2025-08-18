@@ -23,6 +23,7 @@ class ChatMessageDto(BaseModel):
 
 class ChatRequest(BaseModel):
     """チャット形式の会話リクエスト"""
+    mail_address: str = "test@example.com"
     messages: List[ChatMessageDto] = Field(
         ...,
         description="会話履歴のメッセージリスト",
@@ -33,9 +34,9 @@ class ChatRequest(BaseModel):
         ]
     )
     schema: Optional[dict] = Field(
-    None,
-    description="JSON Schema（Draft-07 サブセット）。指定すると LLM がこの構造で返す",
-    example={
+        None,
+        description="JSON Schema（Draft-07 サブセット）。指定すると LLM がこの構造で返す",
+        example={
             "type": "object",
             "properties": {
                 "answer": { "type": "string" }
