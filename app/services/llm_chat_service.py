@@ -1,5 +1,6 @@
 from typing import List, Dict, Any, Optional
 
+from app.infrastructure.chat_table import ChatTable
 from app.domain.chat import Chat, Message
 from app.services.gateways.chat_llm_client import ChatLLMClient
 from app.spec import ChatMessageDto
@@ -10,11 +11,19 @@ class LLMChatService:
 
     def __init__(self, llm_client: ChatLLMClient):
         self._llm_client = llm_client
+        self._chat_table = ChatTable()
+        self._first_prompt = f"""あなたは住民から地域への要望作成を支援するアシスタントです。
+- まず要望の内容を聞き、その後に場所（最低限、市区町村）を尋ねます。
+- 不足があれば簡潔に一つずつ補足質問します（同時に複数質問しない）。
+- 最終的に「要望」「場所」「背景・理由（任意）」「緊急度（任意）」を整形して要約し、ユーザーに確認を取ります。
+- 文章はていねいで具体的、1メッセージは200字程度を目安に簡潔に。
+"""
 
     async def invoke(
         self,
         messages: List[ChatMessageDto],
         schema: Optional[Dict[str, Any]],
+        chat_id: Optional[str] = None
     ) -> Dict[str, Any]:
         """ユーザー入力を受け取り、LLM から応答を生成して返す"""
         if not messages:
@@ -26,14 +35,20 @@ class LLMChatService:
             # AIチャット
             generated = await self._llm_client.chat(chat.messages, schema=schema)
 
+            # DynamoDB に追加
+            messages_dict = [{"role": m.role, "content": m.content} for m in chat.messages][1:]
+            new_chat_id = self._chat_table.put_chat_message(messages_dict, generated, chat_id)
+
             if isinstance(generated, dict):
-                return {"success": True, "generated_json": generated}
+                return {"success": True, "generated_json": generated, "chat_id": new_chat_id}
             else:
-                return {"success": True, "generated_text": generated}
+                return {"success": True, "generated_text": generated, "chat_id": new_chat_id}
 
         except Exception as e:
             return {"success": False, "error": str(e)}
 
     def _create_chat(self, dtos: List[ChatMessageDto]) -> Chat:
         """メッセージリストから Chat ドメインオブジェクトを作成"""
-        return Chat([Message(role=d.role, content=d.content) for d in dtos])
+        messages = [Message(role=d.role, content=d.content) for d in dtos]
+        messages.insert(0, Message(role="user", content=self._first_prompt))
+        return Chat(messages)
