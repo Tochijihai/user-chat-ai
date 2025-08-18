@@ -8,6 +8,8 @@ charset-normalizer==3.4.2 ; python_version >= "3.11" and python_version < "4.0"
 click==8.2.1 ; python_version >= "3.11" and python_version < "4.0"
 colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and (platform_system == "Windows" or sys_platform == "win32")
 fastapi==0.115.12 ; python_version >= "3.11" and python_version < "4.0"
+geographiclib==2.0 ; python_version >= "3.11" and python_version < "4.0"
+geopy==2.4.1 ; python_version >= "3.11" and python_version < "4.0"
 h11==0.16.0 ; python_version >= "3.11" and python_version < "4.0"
 httpcore==1.0.9 ; python_version >= "3.11" and python_version < "4.0"
 httptools==0.6.4 ; python_version >= "3.11" and python_version < "4.0"

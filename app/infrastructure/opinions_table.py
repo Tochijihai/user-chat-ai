@@ -10,7 +10,7 @@ from botocore.exceptions import ClientError
 class OpinionsTable:
     def __init__(self):
         table_name = "opinions"
-        dynamodb = boto3.resource("dynamodb", region_name="ap-northeast-1", endpoint_url="http://localhost:8002")
+        dynamodb = boto3.resource("dynamodb", region_name="ap-northeast-1")
         self.table = dynamodb.Table(table_name)
 
     def put_opinion(
