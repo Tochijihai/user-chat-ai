@@ -1,7 +1,7 @@
 """チャットドメインモデル"""
 
-from typing import List, Literal
-from dataclasses import dataclass
+from typing import List, Literal, Optional
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -20,9 +20,41 @@ class Message:
 
 
 @dataclass
+class Form:
+    """問い合わせフォーム"""
+    title: Optional[str] = None  # 例: "家の近くに落書き"
+    category: Optional[Literal["対応依頼", "質問", "賞賛"]] = None
+    description: Optional[str] = None  # 詳細説明
+    place: Optional[str] = None  # 場所名（例: "大田区大森町"）
+    
+    def is_complete(self) -> bool:
+        """フォームが完成しているかどうか"""
+        return (
+            self.title is not None and
+            self.category is not None and
+            self.description is not None and
+            self.place is not None
+        )
+    
+    def get_missing_fields(self) -> List[str]:
+        """未入力のフィールドリストを取得"""
+        missing = []
+        if not self.title:
+            missing.append("title")
+        if not self.category:
+            missing.append("category")
+        if not self.description:
+            missing.append("description")
+        if not self.place:
+            missing.append("place")
+        return missing
+
+
+@dataclass
 class Chat:
     """チャットドメインモデル"""
     messages: List[Message]
+    form: Form = field(default_factory=Form)
     
     def add_message(self, message: Message) -> None:
         """メッセージを追加"""

@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: FastAPI (existing) on Lambda
+
+Globals:
+  Function:
+    Runtime: python3.11
+    MemorySize: 512
+    Timeout: 30
+
+Resources:
+  UserChatAIAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../ # ルート全部をパッケージ
+      Handler: aws_sam/handler.lambda_handler
+      Architectures: [x86_64]
+      Environment:
+        Variables:
+          BEDROCK_REGION: us-east-1
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+                - bedrock:InvokeModelWithResponseStream
+              Resource:
+                - "arn:aws:bedrock:ap-northeast-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+                - "arn:aws:bedrock:*::foundation-model/*"
+      Events:
+        HttpProxy:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY

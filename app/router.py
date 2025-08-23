@@ -26,10 +26,16 @@ async def chat_completion(request: ChatRequest):
     チャット形式での会話エンドポイント
     
     会話履歴を考慮してBedrockが返答を生成します。
+    フォーム機能により、段階的に要望情報を収集します。
     roleは'user'（ユーザー）または'assistant'（AI）を指定してください。
     """
     llm_client = BedrockChatLLMClient()
     # 依存性注入：インフラ層をアプリケーションサービスに注入
     chat_service = LLMChatService(llm_client)
-    result = await chat_service.invoke(request.mail_address, request.messages, request.schema)
+    result = await chat_service.invoke(
+        request.mail_address, 
+        request.messages, 
+        request.form,
+        request.schema
+    )
     return result
